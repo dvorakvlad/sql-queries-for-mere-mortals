@@ -1,0 +1,72 @@
+Sales Orders Database
+
+1.
+SELECT ProductNumber, WholesalePrice,
+    WholesalePrice - (WholesalePrice * 0.05) AS NewPrice
+FROM Product_Vendors;
+
+2.
+SELECT CustomerID, OrderDate, OrderNumber
+FROM Orders
+ORDER BY CustomerID, OrderDate DESC, ShipDate DESC;
+
+3.
+SELECT VendName, 
+    CONCAT(VendStreetAddress, ", ", VendCity, 
+    " ", VendState, " ", VendZipCode) VendCompleteAddress,
+    VendPhoneNumber
+FROM Vendors
+ORDER BY VendName;
+
+Entertainment Agency Database
+
+1.
+SELECT CONCAT(CustLastName, " ", CustFirstName) CustNames, CustCity
+FROM Customers
+ORDER BY CustCIty, CustNames;
+
+2.
+SELECT EntStageName, EntWebPage
+FROM Entertainers;
+
+3.
+SELECT CONCAT(AgtFirstName, ' ', AgtFirstName) AS Agent, DateHired, 
+    DATE_ADD(DateHired, INTERVAL 6 MONTH) AS FirstReview
+FROM Agents
+ORDER BY Agent;
+
+School Scheduling Database
+
+1.
+SELECT Salary, CONCAT(StfLastname, ", ", StfFirstName) AS StaffMember
+FROM staff
+ORDER BY Salary DESC, StaffMember;
+
+2.
+SELECT CONCAT("(", StfAreaCode, ") ", StfPhoneNumber) AS Phone, 
+    CONCAT(StfLastname, ", ", StfFirstName) AS StaffMember
+FROM staff
+ORDER BY StaffMember, Phone;
+
+3.
+SELECT CONCAT(StudLastName, ", ", StudFirstName) AS StudentName, StudCity
+FROM students
+ORDER BY StudCity, StudentName;
+
+Bowling League Database
+
+1.
+SELECT TourneyLocation, TourneyDate, 
+    DATE_ADD(TourneyDate, INTERVAL 1 YEAR) AS NextYearTourneyDate
+FROM tournaments
+ORDER BY TourneyLocation;
+
+2.
+SELECT CONCAT(BowlerLastName, ", ", BowlerFirstName) AS Name, BowlerPhoneNumber
+FROM bowlers
+ORDER BY Name;
+
+3.
+SELECT TeamID, CONCAT(BowlerLastName, ", ", BowlerFirstName) AS Name
+FROM bowlers
+ORDER BY TeamID;
