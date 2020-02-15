@@ -1,0 +1,206 @@
+Sales Orders Database
+
+1.
+SELECT CONCAT(customers.custfirstname, ' ', customers.custlastname) AS CustomerFullName,
+    orders.OrderDate
+FROM customers
+JOIN orders
+ON customers.customerID = orders.customerID
+ORDER BY orders.OrderDate;
+
+2.
+SELECT DISTINCT
+    CONCAT(employees.empfirstname, ' ', employees.emplastname) AS EmpFullName, 
+    CONCAT(customers.custfirstname, ' ', customers.custlastname) AS CustomerFullName
+FROM (employees
+    JOIN orders
+    ON employees.employeeID = orders.employeeID)
+    JOIN customers
+    ON orders.customerID = customers.CustomerID;
+
+3.
+SELECT orders.OrderNumber, order_details.ProductNumber, 
+    products.ProductName, products.RetailPrice, order_details.QuantityOrdered, 
+    (order_details.QuantityOrdered * products.RetailPrice) AS TotalOwed  
+FROM ((orders
+    JOIN order_details
+        ON orders.ordernumber = order_details.ordernumber)
+    JOIN products
+        ON order_details.productnumber = products.productnumber)
+ORDER BY orders.OrderNumber;
+
+4.
+SELECT vendors.VendorID, vendors.VendName, product_vendors.ProductNumber, 
+    products.ProductName, product_vendors.WholesalePrice
+FROM ((vendors
+    JOIN product_vendors
+        ON vendors.VendorID = product_vendors.VendorID)
+    JOIN products
+        ON product_vendors.productNumber = products.productNumber)
+WHERE product_vendors.WholesalePrice <= 100;
+
+5.
+SELECT CONCAT(CustFirstName, ' ', CustLastName) AS CustName,
+    CONCAT(EmpFirstName, ' ', EmpLastName) AS EmpName
+FROM customers, employees
+WHERE CustLastName = EmpLastName;
+
+6.
+SELECT CONCAT(CustFirstName, ' ', CustLastName) AS CustName,
+    CONCAT(EmpFirstName, ' ', EmpLastName) AS EmpName
+FROM customers, employees
+WHERE CustCity = EmpCity;
+
+Entertainment Agency Database
+
+1.
+SELECT agents.AgentID, CONCAT(agents.AgtFirstName, ' ', agents.AgtLastName) AS AgtName,
+    engagements.EngagementNumber, engagements.StartDate
+FROM agents
+JOIN engagements
+    ON agents.AgentID = engagements.AgentID
+ORDER BY engagements.StartDate DESC;
+
+2.
+SELECT DISTINCT CONCAT(customers.CustFirstName, ' ', customers.CustLastName) AS CastName,
+    entertainers.EntStageName
+FROM ((customers
+    JOIN engagements
+        ON customers.customerID = engagements.customerID)
+    JOIN entertainers
+        ON engagements.entertainerID = entertainers.entertainerID);
+
+3.
+SELECT CONCAT(agents.AgtFirstName, ' ', agents.AgtLastName) AS AgtName,
+    entertainers.EntStageName, agents.AgtZipCode
+FROM agents, entertainers
+WHERE agents.agtZipCode = entertainers.entZipCode;
+
+School Scheduling Database
+
+1.
+SELECT buildings.BuildingName, class_rooms.ClassRoomID
+FROM buildings, class_rooms
+WHERE buildings.buildingCode = class_rooms.buildingCode;
+
+2.
+SELECT DISTINCT CONCAT(students.StudFirstName, ' ', students.StudLastName) AS StudName,
+    classes.ClassID, subjects.SubjectName
+FROM (((students
+    JOIN student_schedules
+        ON students.StudentID = student_schedules.StudentID)
+    JOIN classes
+        ON student_schedules.classID = classes.classID)
+    JOIN subjects
+        ON classes.subjectID = subjects.subjectID
+)
+WHERE student_schedules.classstatus = 1;
+
+3.
+SELECT DISTINCT CONCAT(staff.StfFirstName, ' ', staff.StfLastName) AS StuffName,
+    subjects.SubjectName
+FROM (((staff
+    JOIN faculty
+        ON staff.staffID = faculty.staffID)
+    JOIN faculty_subjects
+        ON faculty.staffID = faculty_subjects.staffID)
+    JOIN subjects
+        ON faculty_subjects.subjectID = subjects.subjectID
+);
+
+4.
+SELECT DISTINCT CONCAT(students.StudFirstName, ' ', students.StudLastName) AS StudName
+FROM (((students
+    JOIN student_schedules
+        ON students.StudentID = student_schedules.StudentID)
+    JOIN classes
+        ON student_schedules.classID = classes.classID)
+    JOIN subjects
+        ON classes.subjectID = subjects.subjectID
+)
+WHERE student_schedules.grade >= 85 
+    AND (subjects.subjectdescription LIKE '%art' OR 
+    subjects.subjectdescription LIKE '%computer%');
+
+Bowling League Database
+
+1.
+SELECT teams.TeamName, CONCAT(bowlers.bowlerLastName, ' ', bowlers.bowlerFirstName) AS Bowler
+FROM teams
+JOIN bowlers
+    ON teams.TeamID = bowlers.TeamID;
+
+2.
+SELECT teams.TeamName, 
+    CONCAT(bowlers.bowlerLastName, ' ', bowlers.bowlerFirstName) AS Bowler,
+    bowler_scores.MatchID, bowler_scores.gameNumber, bowler_scores.rawScore
+FROM ((bowlers
+    JOIN teams
+        ON bowlers.TeamID = teams.TeamID)
+    JOIN bowler_scores
+        ON bowlers.bowlerID = bowler_scores.bowlerID
+);
+
+3.
+SELECT CONCAT(b1.BowlerLastName, ' ', b1.BowlerFirstName) AS FirstBowler,
+    b1.BowlerZip,
+    CONCAT(b2.BowlerLastName, ' ', b2.BowlerFirstName) AS SecondBowler
+FROM bowlers AS b1
+JOIN bowlers AS b2
+ON b1.bowlerZip = b2.bowlerZip 
+WHERE b1.bowlerID <> b2.bowlerID;
+
+Recepies Database
+
+1.
+SELECT recipes.RecipeID, recipe_classes.RecipeClassDescription, 
+    recipes.RecipeTitle
+FROM recipes
+JOIN recipe_classes
+    ON recipes.RecipeClassID = recipe_classes.RecipeClassID
+WHERE recipe_classes.RecipeClassDescription = 'Salad';
+
+2.
+SELECT DISTINCT recipes.RecipeID, recipes.RecipeTitle
+FROM ((recipes
+    JOIN recipe_ingredients
+        ON recipes.RecipeID = recipe_ingredients.RecipeID)
+    JOIN ingredients
+        ON recipe_ingredients.ingredientID = ingredients.ingredientID)
+WHERE ingredients.ingredientClassID = (
+    SELECT DISTINCT ingredientClassID
+    FROM ingredient_classes
+    WHERE ingredientClassDescription = 'Dairy');
+    
+3.
+SELECT i1.ingredientName AS FirstIngredient,
+    measurements.MeasurementDescription, 
+    i2.ingredientName AS SecondIngredient
+FROM (ingredients AS i1
+    JOIN measurements
+        ON i1.measureAmountID = measurements.measureAmountID
+    JOIN ingredients AS i2
+        ON i1.ingredientID <> i2.ingredientID
+        AND i1.measureAmountID = i2.measureAmountID);
+        
+4.
+SELECT BeefD.recipeTitle
+FROM
+    (SELECT DISTINCT recipes.recipeID, recipes.recipeTitle
+     FROM recipes
+     JOIN recipe_ingredients
+        USING (recipeID)
+     JOIN ingredients
+        USING (ingredientID)
+     WHERE ingredients.ingredientName = 'Beef'
+    ) AS BeefD
+JOIN 
+    (SELECT DISTINCT recipes.recipeID, recipes.recipeTitle
+     FROM recipes
+     JOIN recipe_ingredients
+        USING (recipeID)
+     JOIN ingredients
+        USING (ingredientID)
+     WHERE ingredients.ingredientName = 'Garlic'
+    ) AS GarlicD
+ON BeefD.recipeID = GarlicD.recipeID;
