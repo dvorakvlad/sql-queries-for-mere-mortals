@@ -1,0 +1,173 @@
+Sales Orders Database
+
+1.
+SELECT customers.customerID, customers.CustLastName,
+    customers.CustFirstName
+FROM customers
+LEFT JOIN (
+    SELECT orders.customerID
+    FROM orders
+    JOIN order_details
+        USING (orderNumber)
+    JOIN products
+        USING (productNumber)
+    WHERE products.ProductName LIKE '%helmet%'
+) AS Helmets
+ON customers.CustomerID = helmets.customerID
+WHERE helmets.customerID IS NULL;
+
+2.
+SELECT customers.CustomerID, customers.CustFirstName, 
+    customers.CustLastName, customers.CustZipCode
+FROM customers
+LEFT JOIN employees
+ON customers.CustZipCode = employees.EmpZipCode
+WHERE employees.employeeID IS NULL;
+
+3.
+SELECT DISTINCT products.productName, tabl.orderDate
+from products
+LEFT JOIN (
+    SELECT order_details.orderNumber, order_details.productNumber, 
+    orders.OrderDate
+    FROM order_details
+    LEFT JOIN orders
+    USING (orderNumber)
+) AS tabl
+ON products.productNumber = tabl.productNumber;
+----------------
+
+OR
+
+----------------
+
+SELECT DISTINCT products.productName, orders.orderDate
+FROM products
+LEFT JOIN order_details
+USING (productNumber)
+LEFT JOIN orders
+USING (orderNumber);
+
+
+Entertainment Agency Database
+
+1.
+SELECT agents.AgentID, agents.AgtFirstName, agents.AgtLastName
+FROM agents
+LEFT JOIN engagements
+USING (agentID)
+WHERE entertainerID IS NULL;
+
+2.
+SELECT customers.CustomerID, customers.CustFirstName, customers.CustLastName
+FROM customers
+LEFT JOIN engagements
+USING (CustomerID)
+WHERE engagements.CustomerID IS NULL;
+
+3.
+SELECT entertainers.EntertainerID, entertainers.EntStageName,
+    engagements.EngagementNumber, engagements.StartDate, engagements.CustomerID
+FROM entertainers
+LEFT JOIN engagements
+USING (EntertainerID);
+
+
+School Scheduling Database
+
+1.
+SELECT classes.ClassID, classes.SubjectID, 
+    subjects.SubjectName, classes.ClassRoomID, classes.StartTime
+FROM classes
+LEFT JOIN (
+    SELECT student_schedules.classID
+    FROM student_schedules
+    JOIN student_class_status
+    USING (classStatus)
+    WHERE student_class_status.classStatusDEscription = 'Enrolled'
+) as EnrolledTab
+ON classes.classID = EnrolledTab.classID
+JOIN subjects
+USING (subjectID)
+WHERE EnrolledTab.classID IS NULL;
+
+2.
+SELECT *
+FROM subjects
+LEFT JOIN faculty_subjects
+USING (SubjectID)
+WHERE faculty_subjects.SubjectID IS NULL;
+
+3.
+SELECT students.studentID, students.StudLastName, 
+    students.StudFirstName
+FROM students
+LEFT JOIN (
+    SELECT student_schedules.StudentID
+    FROM student_schedules
+    JOIN student_class_status
+    USING (ClassStatus)
+    WHERE student_class_status.classStatusDescription = 'Enrolled'
+) AS enrolledStudents
+ON students.studentID = enrolledStudents.studentID
+WHERE enrolledStudents.studentID IS NULL;
+
+4.
+SELECT CONCAT(staff.StfLastname, ' ', staff.StfFirstName) AS StaffName, 
+    subjects.SubjectName, classes.ClassID, classes.ClassRoomID, 
+    classes.StartTime, classes.Duration
+FROM staff
+LEFT JOIN faculty_classes
+USING (staffID)
+LEFT JOIN classes
+USING (classID)
+LEFT JOIN subjects
+USING (subjectID);
+
+Bowling League Database
+
+1.
+SELECT tourney_matches.*, match_games.GameNumber
+FROM tourney_matches
+LEFT JOIN match_games
+USING (matchID)
+WHERE match_games.GameNumber IS NULL;
+
+2.
+SELECT tournaments.*, match_games.matchID, match_games.WinningTeamID
+FROM tournaments
+LEFT JOIN tourney_matches
+USING (TourneyID)
+LEFT JOIN match_games
+USING (MatchID);
+
+Recepies Database
+
+1.
+SELECT *
+FROM recipe_classes
+LEFT JOIN recipes
+USING (RecipeClassID)
+WHERE recipes.RecipeClassID IS NULL;
+
+2.
+SELECT ingredients.IngredientID, ingredients.IngredientName, 
+    recipes.RecipeID, recipes.RecipeTitle
+FROM ingredients
+LEFT JOIN recipe_ingredients
+USING (IngredientID)
+LEFT JOIN recipes
+USING (RecipeID);
+
+3.
+SELECT recipe_classes.*, recipes.recipeID, recipes.recipeTitle
+FROM recipe_classes
+LEFT JOIN recipes
+USING (RecipeClassID)
+WHERE recipe_classes.RecipeClassDescription IN ('Soup', 'Salad', 'Main course');
+
+4.
+SELECT recipe_classes.*, recipes.recipeID, recipes.recipeTitle
+FROM recipe_classes
+LEFT JOIN recipes
+USING (RecipeClassID);
