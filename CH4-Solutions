@@ -1,0 +1,63 @@
+Sales Orders Database
+
+1.
+SELECT * FROM employees;
+
+2.
+SELECT VendCity, VendName 
+FROM vendors
+ORDER BY VendCity;
+
+Entertainment Agency Database
+
+1.
+SELECT AgtLastName, AgtFirstName, AgtPhoneNumber
+FROM Agents
+ORDER BY AgtLastName, AgtFirstName;
+
+2.
+SELECT * FROM engagements;
+
+3.
+SELECT StartDate, EngagementNumber
+FROM engagements
+ORDER BY StartDate DESC, EngagementNumber;
+
+School Scheduling Database
+
+1.
+SELECT SubjectName FROM subjects;
+
+2.
+SELECT DISTINCT Title FROM faculty;
+
+3.
+SELECT StfLastname, StfFirstName, StfPhoneNumber 
+FROM Staff
+ORDER BY StfLastname, StfFirstName;
+
+Bowling League Database
+
+1.
+SELECT TeamName 
+FROM Teams
+ORDER BY TeamName;
+
+2.
+SELECT * FROM Bowler_scores;
+
+3.
+SELECT BowlerLastName, BowlerFirstName, BowlerAddress, 
+BowlerCity, BowlerState, BowlerZip 
+FROM Bowlers
+ORDER BY BowlerLastName, BowlerFirstName;
+
+Recipes Database
+
+1.
+SELECT IngredientName FROM ingredients;
+
+2.
+SELECT *
+FROM Recipes
+ORDER BY RecipeTitle;
