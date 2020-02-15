@@ -1,0 +1,88 @@
+Sales Orders Database
+
+1.
+SELECT VendName, VendCity
+FROM Vendors
+WHERE VendCity IN ('Ballard', 'Bellevue', 'Redmond')
+ORDER BY VendName;
+
+2.
+SELECT ProductName, RetailPrice
+FROM Products
+WHERE RetailPrice >= 125
+ORDER BY ProductName;
+
+3.
+SELECT VendName
+FROM Vendors
+WHERE VendWebPage IS NULL
+ORDER BY VendName;
+
+
+Entertainment Agency Database
+
+1.
+SELECT EngagementNumber, ContractPrice, StartDate, EndDate
+FROM Engagements
+WHERE StartDate <= '2012-10-31' AND EndDate >= '2012-10-01';
+
+2.
+SELECT EngagementNumber, ContractPrice, StartDate, StartTime, EndDate, StopTime
+FROM Engagements
+WHERE StartDate <= '2012-10-31' AND EndDate >= '2012-10-01'
+AND StartTime <= '17:00' AND StopTime >= '12:00';
+
+3.
+SELECT EngagementNumber, StartDate, StartTime, EndDate, StopTime
+FROM Engagements
+WHERE StartDate - EndDate = 0;
+
+
+School Scheduling Database
+
+1.
+SELECT StfFirstName, StfLastname, StfStreetAddress
+FROM staff
+WHERE StfStreetAddress LIKE "%Box%";
+
+2.
+SELECT *
+FROM students
+WHERE NOT StudState IN ('BC', 'WA', 'OR', 'ID');
+
+3.
+SELECT *
+FROM subjects
+WHERE SubjectCode LIKE 'MUS%';
+
+Bowling League Database
+
+1.
+SELECT *
+FROM tournaments
+WHERE TourneyDate LIKE '2012-09-%';
+
+2.
+SELECT *
+FROM tournaments
+WHERE TourneyLocation IN ('Bolero Lanes', 'Red Rooster Lanes', 'Thunderbird Lanes');
+
+3.
+SELECT *
+FROM bowlers
+WHERE BowlerCity 
+    IN ('Bellevue', 'Bothell', 'Duvall', 'Redmond', 'Woodinville')
+AND TeamID BETWEEN 5 AND 8;
+
+Recepies Database
+
+1.
+SELECT *
+FROM recipes
+WHERE RecipeClassID = 1
+AND Notes IS NOT NULL;
+
+2.
+SELECT *
+FROM recipes
+WHERE RecipeID BETWEEN 1 AND 5;
