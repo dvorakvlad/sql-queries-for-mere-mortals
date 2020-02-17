@@ -1,0 +1,96 @@
+Sales Orders Database
+
+1.
+SELECT DISTINCT CONCAT(customers.CustLastName, ' ', customers.CustFirstName) AS Name,
+    'Customer' AS Type, products.productName
+FROM ((( customers
+    JOIN orders
+    USING (CustomerID))
+    JOIN order_details
+    USING (orderNumber))
+    JOIN products
+    USING (productNumber))
+WHERE products.productName LIKE '%helmet%'
+UNION
+SELECT vendors.VendName, 'Vendor' AS Type, products.productName
+FROM ((( vendors
+    JOIN product_vendors
+    USING (vendorID))
+    JOIN products
+    USING (productNumber)))
+WHERE products.productName LIKE '%helmet%';
+
+Entertainment Agency Database
+
+1.
+SELECT CONCAT(customers.CustLastName, ' ', customers.CustFirstName) AS Name,
+    'Customer 'AS Type
+FROM customers
+UNION ALL
+SELECT entertainers.EntStageName, 'Entertainer 'AS Type
+FROM entertainers;
+
+2.
+SELECT CONCAT(customers.CustLastName, ' ', customers.CustFirstName) AS Name,
+    'Customer 'AS Type
+FROM customers
+JOIN musical_preferences
+USING (CustomerID)
+WHERE musical_preferences.styleID = (
+    SELECT DISTINCT styleID FROM musical_styles WHERE styleName = 'Contemporary')
+UNION ALL
+SELECT entertainers.EntStageName, 'Entertainer 'AS Type
+FROM entertainers
+JOIN entertainer_styles
+USING (entertainerID)
+WHERE entertainer_styles.styleID = (
+    SELECT DISTINCT styleID FROM musical_styles WHERE styleName = 'Contemporary');
+
+School Scheduling Database
+
+1.
+SELECT CONCAT(StfLastname, ' ', StfFirstName) AS Name, 
+    StfStreetAddress AS StreetAddress,
+    StfCity AS City, StfState AS State, StfZipCode AS ZipCode
+FROM staff
+UNION ALL
+SELECT CONCAT(StudLastName, ' ', StudFirstName) AS Name, 
+    StudStreetAddress AS StreetAddress,
+    StudCity AS City, StudState AS State, StudZipCode AS ZipCode
+FROM students
+ORDER BY ZipCode;
+
+Bowling League Database
+
+1.
+SELECT CONCAT(bowlers.BowlerLastName, ' ', bowlers.BowlerFirstName) AS Name, 
+    bowler_scores.RawScore, tournaments.TourneyLocation
+FROM bowlers
+JOIN bowler_scores
+USING (bowlerID)
+JOIN tourney_matches
+USING (matchID)
+JOIN tournaments
+USING (tourneyID)
+WHERE (tournaments.TourneyLocation = 'Thunderbird Lanes' AND 
+(bowler_scores.RawScore = 166 OR bowler_scores.RawScore > 165))
+OR (tournaments.TourneyLocation = 'Bolero Lanes' AND
+(bowler_scores.RawScore = 151 OR bowler_scores.RawScore > 150))
+ORDER BY rawScore;
+
+Recepies Database
+
+1.
+SELECT ingredients.IngredientName, measurements.MeasurementDescription, 
+    'Ingredient' AS Type
+FROM ingredients
+LEFT JOIN measurements
+USING (MeasureAmountID)
+UNION
+SELECT ingredients.IngredientName, measurements.MeasurementDescription, 
+    'Recipe' AS Type
+FROM ingredients
+JOIN recipe_ingredients
+USING (IngredientID)
+JOIN measurements
+ON recipe_ingredients.MeasureAmountID = measurements.MeasureAmountID;
