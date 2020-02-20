@@ -1,0 +1,154 @@
+Sales Orders Database
+
+1.
+SELECT products.ProductNumber, products.ProductName,
+    (
+        SELECT MAX(orders.OrderDate)
+        FROM order_details
+        JOIN orders
+        USING (orderNumber)
+        WHERE order_details.productNumber = products.productNumber
+    ) AS LastOrder
+FROM products;
+
+2.
+SELECT customers.CustomerID, 
+    CONCAT(customers.CustLastName, ' ', customers.CustFirstName) AS Customer
+FROM customers
+WHERE customers.CustomerID IN (
+    SELECT orders.CustomerID
+    FROM orders
+    JOIN order_details
+    USING (orderNumber)
+    JOIN products
+    USING (productNumber)
+    WHERE products.productName LIKE '%bike');
+    
+3.
+SELECT products.ProductNumber, products.ProductName
+FROM products
+WHERE products.productNumber NOT IN (
+    SELECT order_details.productNumber
+    FROM order_details);
+
+Entertainment Agency Database
+
+1.
+SELECT entertainers.EntertainerID, entertainers.EntStageName,
+(   
+    SELECT COUNT(engagements.EngagementNumber)
+    FROM engagements
+    WHERE engagements.EntertainerID = entertainers.EntertainerID
+) AS Engagements
+FROM entertainers;
+
+2.
+SELECT DISTINCT customers.CustomerID, customers.CustLastName, 
+    customers.CustFirstName
+FROM customers
+JOIN engagements
+USING (CustomerID)
+WHERE engagements.EntertainerID IN (
+    SELECT entertainers.EntertainerID
+    FROM entertainers
+    JOIN entertainer_styles
+    USING (EntertainerID)
+    WHERE entertainer_styles.styleID IN (
+        SELECT styleID 
+        FROM musical_styles
+        WHERE styleName = 'Country' OR styleName = 'Country Rock'
+    )
+);
+
+3.
+SELECT DISTINCT entertainers.EntertainerID, entertainers.EntStageName 
+FROM entertainers
+JOIN engagements
+USING (EntertainerID)
+WHERE engagements.customerID = SOME (
+    SELECT customers.customerID
+    FROM customers
+    WHERE customers.CustLastName IN ('Berg', 'Hallmark'));
+    
+------------------------------
+OR 
+------------------------------
+
+SELECT entertainers.EntertainerID, entertainers.EntStageName 
+FROM entertainers
+WHERE entertainers.EntertainerID = SOME (
+    SELECT engagements.EntertainerID
+    FROM engagements
+    JOIN customers
+    USING (customerID)
+    WHERE customers.CustLastName IN ('Berg', 'Hallmark'));
+    
+4.
+SELECT agents.AgentID, agents.AgtLastName, agents.AgtFirstName  
+FROM agents
+WHERE agents.AgentID NOT IN (
+    SELECT engagements.AgentID
+    FROM engagements
+    WHERE engagements.entertainerID IS TRUE);
+    
+School Scheduling Database
+
+1.
+SELECT staff.StaffID, staff.StfLastname, staff.StfFirstName,
+    (
+        SELECT COUNT(classID) 
+        FROM faculty_classes 
+        WHERE faculty_classes.StaffID = staff.StaffID) AS Classes
+FROM staff;
+
+2.
+SELECT students.StudentID, students.StudLastName, students.StudFirstName
+FROM students
+WHERE students.StudentID IN (
+    SELECT student_schedules.StudentID
+    FROM student_schedules
+    JOIN classes
+    USING (classID)
+    WHERE classes.TuesdaySchedule = 1);
+
+Bowling League Database
+
+1.
+SELECT BowlerID, BowlerLastName, BowlerFirstName, 
+    (SELECT COUNT(matchID)
+    FROM bowler_scores
+    WHERE bowler_scores.BowlerID = bowlers.BowlerID) AS MatchNum
+FROM bowlers;
+
+2.
+SELECT DISTINCT b.BowlerID, b.BowlerLastName, 
+    b.BowlerFirstName, bs.RawScore
+FROM bowlers AS b
+JOIN bowler_scores AS bs
+USING (bowlerID)
+WHERE bs.RawScore < ALL (
+    SELECT bs2.RawScore
+    FROM bowlers AS b2
+    JOIN bowler_scores AS bs2
+    ON b2.BowlerID = bs2.BowlerID
+    WHERE b2.BowlerID != b.BowlerID AND b2.TeamID = b.TeamID);
+
+Recepies Database
+
+1.
+SELECT recipe_classes.RecipeClassID, recipe_classes.RecipeClassDescription,
+    (SELECT COUNT(recipeID) 
+    FROM recipes
+    WHERE recipes.recipeClassID = recipe_classes.RecipeClassID) AS RecipesQty
+FROM recipe_classes;
+
+2.
+SELECT DISTINCT i.IngredientID, i.IngredientName, i.MeasureAmountID
+FROM recipe_ingredients AS ri
+JOIN ingredients AS i
+ON ri.IngredientID = i.IngredientID 
+WHERE ri.MeasureAmountID <> ANY(
+    SELECT i2.MeasureAmountID
+    FROM ingredients AS i2
+    WHERE i2.IngredientID = i.IngredientID)
+ORDER BY i.IngredientID;  
